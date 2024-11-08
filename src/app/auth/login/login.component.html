@@ -1,0 +1,134 @@
+<body class="h-full">
+  <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+    <div class="sm:mx-auto sm:w-full sm:max-w-sm">
+      <h2 class="mt-10 text-center text-2xl font-bold tracking-tight text-gray-900">
+        Sign in to your account
+      </h2>
+    </div>
+
+    <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+      <!-- Success Message -->
+      <div *ngIf="successMessage" class="mb-4 text-green-600 text-center">
+        {{ successMessage }}
+      </div>
+
+      <!-- Error Message -->
+      <div *ngIf="errorMessage" class="mb-4 text-red-600 text-center">
+        {{ errorMessage }}
+      </div>
+
+      <!-- Login Form -->
+      <form *ngIf="!session" [formGroup]="loginForm" (ngSubmit)="onLogIn()" class="space-y-6">
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-900">Email address</label>
+          <input
+            formControlName="email"
+            id="email"
+            type="email"
+            required
+            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          />
+        </div>
+
+        <div>
+          <label for="password" class="block text-sm font-medium text-gray-900">Password</label>
+          <input
+            formControlName="password"
+            id="password"
+            type="password"
+            required
+            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          />
+        </div>
+
+        <div>
+          <button
+            type="submit"
+            [disabled]="isLoading || !loginForm.valid"
+            class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+          >
+            <span *ngIf="isLoading" class="loader mr-2"></span>
+            Log In
+          </button>
+        </div>
+      </form>
+
+      <!-- MFA QR Code Section -->
+      <div *ngIf="isFirstTimeMfaSetup" class="mt-6 space-y-6">
+        <h3 class="text-lg font-medium text-gray-900 text-center">Set up Multi-Factor Authentication</h3>
+        <p class="text-sm text-gray-600 text-center">
+          Scan the QR code with your authenticator app or enter the code manually.
+        </p>
+        <div class="text-center">
+          <img [src]="qrCodeUrl" alt="Scan QR Code" class="mx-auto my-4" />
+        </div>
+        <div>
+          <label for="otpauthUrl" class="block text-sm font-medium text-gray-900">Manual Entry Code:</label>
+          <input
+            id="otpauthUrl"
+            type="text"
+            [value]="otpauthUrl"
+            readonly
+            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm bg-gray-100"
+          />
+        </div>
+      </div>
+
+      <!-- First-Time MFA Setup Form -->
+      <form *ngIf="isFirstTimeMfaSetup" [formGroup]="mfaSetupForm" (ngSubmit)="onMfaRegister()" class="space-y-6">
+        <div>
+          <label for="mfaCode" class="block text-sm font-medium text-gray-900">Enter Code from App</label>
+          <input
+            formControlName="mfaCode"
+            id="mfaCode"
+            type="text"
+            required
+            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          />
+        </div>
+        <div>
+          <button
+            type="submit"
+            [disabled]="isLoading || !mfaSetupForm.valid"
+            class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+          >
+            <span *ngIf="isLoading" class="loader mr-2"></span>
+            Complete Setup
+          </button>
+        </div>
+      </form>
+
+      
+      <!-- MFA Verification Form -->
+      <form *ngIf="session && !qrCodeUrl" [formGroup]="mfaSetupForm" (ngSubmit)="onMfaSubmit()" class="space-y-6">
+        <div>
+          <label for="mfaCode" class="block text-sm font-medium text-gray-900">Enter MFA Code</label>
+          <input
+            formControlName="mfaCode"
+            id="mfaCode"
+            type="text"
+            required
+            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          />
+        </div>
+
+        <div>
+          <button
+            type="submit"
+            [disabled]="isLoading || !mfaSetupForm.valid"
+            class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+          >
+            <span *ngIf="isLoading" class="loader mr-2"></span>
+            Verify
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="sm:mx-auto sm:w-full sm:max-w-sm">
+      <h4 class="mt-10 text-center text-sm text-gray-600">
+        <a href="/signup">Don't have an account? Click here to sign up.</a>
+      </h4>
+    </div>
+  </div>
+</body>
